@@ -14,6 +14,9 @@ abstract class ModelTableQuery[M <: Model, MT <: ModelTable[M]](
   def initialize() =
     this.schema.create
 
+  def list() =
+    this.result
+
   def find(id: UUID) =
     filter(_.id === id).result
 

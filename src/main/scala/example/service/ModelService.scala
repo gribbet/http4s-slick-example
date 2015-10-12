@@ -16,13 +16,13 @@ import scala.util.{Failure, Success}
 import scalaz._
 import scalaz.concurrent.Task
 
-abstract class ModelService[M <: Model, MT <: ModelTable[M]](
+abstract class ModelService[M <: Model, +MT <: ModelTable[M]](
   query: ModelTableQuery[M, MT])
   (implicit
     database: DatabaseComponent#DatabaseDef,
     executorService: ExecutorService) {
 
-  def initialize(): Task[_] =
+  def initialize() =
     task(query.initialize)
 
   def find(id: UUID): Task[Option[M]] =
@@ -36,6 +36,9 @@ abstract class ModelService[M <: Model, MT <: ModelTable[M]](
 
   def delete(model: M): Task[_] =
     task(query.delete(model))
+
+  def list(): Task[Seq[M]] =
+    task(query.list)
 
   protected def task[R](action: DBIO[R]): Task[R] = {
     implicit val executionContext = ExecutionContext.fromExecutorService(executorService)
