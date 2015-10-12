@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.typesafe.scalalogging.LazyLogging
 import example.database.Database
-import example.http.WidgetResource
+import example.http.{HttpServices, WidgetResource}
 import example.model.Widget
 import example.service.WidgetService
 import org.http4s.server.blaze.BlazeBuilder
@@ -23,7 +23,7 @@ object Main extends App with LazyLogging {
       .withServiceExecutor(executorService)
       .bindHttp(8080, "0.0.0.0")
       .withNio2(true)
-      .mountService(WidgetResource())
+      .mountService(HttpServices())
       .start
     _ <- io.stdInLines.take(1).run
     _ <- server.shutdown
