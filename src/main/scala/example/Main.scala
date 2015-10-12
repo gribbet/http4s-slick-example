@@ -30,6 +30,7 @@ object Main extends App with LazyLogging {
   val server = BlazeBuilder
     .withServiceExecutor(executorService)
     .bindHttp(8080, "0.0.0.0")
+    .withNio2(true)
     .start
     .run
 
