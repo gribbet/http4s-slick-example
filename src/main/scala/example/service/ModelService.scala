@@ -8,8 +8,8 @@ import java.util.concurrent.ExecutorService
 import example.model.Model
 import example.query.ModelTableQuery
 import example.table.ModelTable
+import slick.backend.DatabaseComponent
 import slick.dbio.DBIO
-import slick.jdbc.JdbcBackend
 
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
@@ -19,7 +19,7 @@ import scalaz.concurrent.Task
 abstract class ModelService[M <: Model, MT <: ModelTable[M]](
   query: ModelTableQuery[M, MT])
   (implicit
-    database: JdbcBackend#DatabaseDef,
+    database: DatabaseComponent#DatabaseDef,
     executorService: ExecutorService) {
 
   def initialize(): Task[_] =

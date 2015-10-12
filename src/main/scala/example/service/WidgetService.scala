@@ -4,9 +4,9 @@ import java.util.concurrent.ExecutorService
 
 import example.query.Widgets
 import example.service.airphrame.service.ModelService
-import slick.jdbc.JdbcBackend
+import slick.backend.DatabaseComponent
 
 class WidgetService(implicit
-  database: JdbcBackend#DatabaseDef,
+  database: DatabaseComponent#DatabaseDef,
   executionService: ExecutorService)
   extends ModelService(Widgets)
