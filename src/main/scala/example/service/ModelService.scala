@@ -3,6 +3,7 @@ package example.service
 package airphrame.service
 
 import java.util.UUID
+import java.util.concurrent.ExecutorService
 
 import example.model.Model
 import example.query.ModelTableQuery
@@ -19,7 +20,7 @@ abstract class ModelService[M <: Model, MT <: ModelTable[M]](
   query: ModelTableQuery[M, MT])
   (implicit
     database: JdbcBackend#DatabaseDef,
-    executionContext: ExecutionContext) {
+    executorService: ExecutorService) {
 
   def initialize(): Task[_] =
     task(query.initialize)
@@ -36,11 +37,13 @@ abstract class ModelService[M <: Model, MT <: ModelTable[M]](
   def delete(model: M): Task[_] =
     task(query.delete(model))
 
-  protected def task[R](action: DBIO[R]): Task[R] =
+  protected def task[R](action: DBIO[R]): Task[R] = {
+    implicit val executionContext = ExecutionContext.fromExecutorService(executorService)
     Task.async { cb =>
       database.run(action) onComplete {
         case Success(x) => cb(\/-(x))
         case Failure(x) => cb(-\/(x))
       }
     }
+  }
 }

@@ -1,17 +1,16 @@
 package example
 
 import java.util.UUID
+import java.util.concurrent.Executors
 
 import com.typesafe.scalalogging.LazyLogging
-import example.database.Driver
+import example.database.Database
 import example.model.Widget
 import example.service.WidgetService
 
-import scala.concurrent.ExecutionContext
-
 object Main extends App with LazyLogging {
-  implicit val executionContext = ExecutionContext.global
-  implicit val database = Driver.api.Database.forURL("jdbc:h2:mem:example;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
+  implicit val executorService = Executors.newFixedThreadPool(4)
+  implicit val database = Database.database
   implicit val widgetService = new WidgetService
 
   def run = {
@@ -24,4 +23,6 @@ object Main extends App with LazyLogging {
   }
 
   logger.info(run.run.toString)
+
+  executorService.shutdown
 }
