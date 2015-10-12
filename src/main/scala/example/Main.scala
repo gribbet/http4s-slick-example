@@ -7,6 +7,7 @@ import com.typesafe.scalalogging.LazyLogging
 import example.database.Database
 import example.model.Widget
 import example.service.WidgetService
+import org.http4s.server.blaze.BlazeBuilder
 
 object Main extends App with LazyLogging {
   implicit val executorService = Executors.newFixedThreadPool(4)
@@ -23,6 +24,13 @@ object Main extends App with LazyLogging {
   }
 
   logger.info(run.run.toString)
+
+  BlazeBuilder
+    .withServiceExecutor(executorService)
+    .bindHttp(8080, "0.0.0.0")
+    .start
+    .run
+    .awaitShutdown()
 
   executorService.shutdown
 }
