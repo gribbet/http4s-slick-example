@@ -9,6 +9,8 @@ import example.model.Widget
 import example.service.WidgetService
 import org.http4s.server.blaze.BlazeBuilder
 
+import scala.io.StdIn
+
 object Main extends App with LazyLogging {
   implicit val executorService = Executors.newFixedThreadPool(4)
   implicit val database = Database.database
@@ -25,12 +27,15 @@ object Main extends App with LazyLogging {
 
   logger.info(run.run.toString)
 
-  BlazeBuilder
+  val server = BlazeBuilder
     .withServiceExecutor(executorService)
     .bindHttp(8080, "0.0.0.0")
     .start
     .run
-    .awaitShutdown()
+
+  StdIn.readLine
+
+  server.shutdownNow
 
   executorService.shutdown
 }
