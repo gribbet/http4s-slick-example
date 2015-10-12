@@ -11,6 +11,9 @@ abstract class ModelTableQuery[M <: Model, MT <: ModelTable[M]](
   cons: Tag => MT)
   extends TableQuery[MT](cons) {
 
+  def initialize() =
+    this.schema.create
+
   def find(id: UUID) =
     filter(_.id === id).result
 
