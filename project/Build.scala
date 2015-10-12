@@ -8,6 +8,9 @@ object Build extends sbt.Build {
     base = file("."))
     .settings(
       version := "1.0.0",
-      scalaVersion := "2.11.7")
+      scalaVersion := "2.11.7",
+      libraryDependencies ++= Seq(
+        "com.typesafe.slick" %% "slick" % "3.0.3",
+        "com.h2database" % "h2" % "1.4.190"))
     .settings(Revolver.settings: _*)
 }
