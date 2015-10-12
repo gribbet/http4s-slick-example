@@ -9,34 +9,26 @@ import example.model.Widget
 import example.service.WidgetService
 import org.http4s.server.blaze.BlazeBuilder
 
-import scala.io.StdIn
+import scalaz.stream.io
 
 object Main extends App with LazyLogging {
   implicit val executorService = Executors.newFixedThreadPool(4)
   implicit val database = Database.database
   implicit val widgetService = new WidgetService
 
-  def run = {
-    val id = UUID.randomUUID()
-    for {
-      _ <- widgetService.initialize
-      _ <- widgetService.create(Widget(id, "Widget"))
-      widget <- widgetService.find(id)
-    } yield widget
-  }
+  val server = for {
+    _ <- widgetService.initialize
+    _ <- widgetService.create(Widget(UUID.randomUUID(), "Widget"))
+    server <- BlazeBuilder
+      .withServiceExecutor(executorService)
+      .bindHttp(8080, "0.0.0.0")
+      .withNio2(true)
+      .start
+    _ <- io.stdInLines.take(1).run
+    _ <- server.shutdown
+  } yield server
 
-  logger.info(run.run.toString)
-
-  val server = BlazeBuilder
-    .withServiceExecutor(executorService)
-    .bindHttp(8080, "0.0.0.0")
-    .withNio2(true)
-    .start
-    .run
-
-  StdIn.readLine
-
-  server.shutdownNow
+  server.run
 
   executorService.shutdown
 }
