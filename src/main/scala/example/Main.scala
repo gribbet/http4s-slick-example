@@ -1,7 +1,6 @@
 package example
 
 import java.util.UUID
-import java.util.concurrent.Executors
 
 import com.typesafe.scalalogging.LazyLogging
 import example.database.Database
@@ -13,7 +12,7 @@ import org.http4s.server.blaze.BlazeBuilder
 import scalaz.stream.io
 
 object Main extends App with LazyLogging {
-  implicit val executorService = Executors.newFixedThreadPool(4)
+  implicit val executorService = Executor()
   implicit val database = Database.database
   implicit val widgetService = new WidgetService
 
