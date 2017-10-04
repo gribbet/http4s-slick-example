@@ -5,28 +5,38 @@ package airphrame.service
 import java.util.UUID
 import java.util.concurrent.ExecutorService
 
+import example.Main.executorService
 import example.model.Model
 import example.query.ModelTableQuery
 import example.table.ModelTable
+import fs2.{Strategy, Task}
 import slick.backend.DatabaseComponent
 import slick.dbio.DBIO
 
 import scala.concurrent.ExecutionContext
-import scala.util.{Failure, Success}
-import scalaz._
-import scalaz.concurrent.Task
 
 abstract class ModelService[M <: Model, +MT <: ModelTable[M]](
   query: ModelTableQuery[M, MT])
   (implicit
     database: DatabaseComponent#DatabaseDef,
-    executorService: ExecutorService) {
+    executionService: ExecutorService) {
+  implicit val executionContext = ExecutionContext.fromExecutor(executorService)
 
   def initialize() =
     task(query.initialize)
 
   def find(id: UUID): Task[Option[M]] =
     task(query.find(id)).map(_.headOption)
+
+  protected def task[R](action: DBIO[R]): Task[R] = {
+    implicit val strategy = Strategy.fromExecutor(executorService)
+    Task.async { cb =>
+      database
+        .run(action)
+        .onComplete(x =>
+          cb(x.toEither))
+    }
+  }
 
   def create(model: M): Task[_] =
     task(query.insert(model))
@@ -37,16 +47,6 @@ abstract class ModelService[M <: Model, +MT <: ModelTable[M]](
   def delete(model: M): Task[_] =
     task(query.delete(model))
 
-  def list(): Task[Seq[M]] =
-    task(query.list)
-
-  protected def task[R](action: DBIO[R]): Task[R] = {
-    implicit val executionContext = ExecutionContext.fromExecutorService(executorService)
-    Task.async { cb =>
-      database.run(action) onComplete {
-        case Success(x) => cb(\/-(x))
-        case Failure(x) => cb(-\/(x))
-      }
-    }
-  }
+  def list(): Task[List[M]] =
+    task(query.list.map(_.toList))
 }

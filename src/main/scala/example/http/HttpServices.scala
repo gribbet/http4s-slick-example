@@ -5,5 +5,5 @@ import example.service.WidgetService
 object HttpServices {
   def apply()(implicit
     widgetService: WidgetService) =
-    (LoggingFilter andThen GZipFilter)(WidgetResource())
+    (LoggingFilter andThen GZipFilter) (WidgetResource())
 }

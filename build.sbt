@@ -1,13 +1,13 @@
 import sbt.Keys._
 import sbt._
 
-val http4sVersion = "0.10.1"
+val http4sVersion = "0.17.3"
 lazy val project = Project(
   id = "http4s-slick-example",
   base = file("."))
   .settings(
     version := "1.0.0",
-    scalaVersion := "2.11.7",
+    scalaVersion := "2.12.3",
     libraryDependencies ++= Seq(
       "com.typesafe.slick" %% "slick" % "3.2.1",
       "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2",

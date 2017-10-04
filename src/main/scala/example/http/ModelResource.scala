@@ -4,8 +4,8 @@ import argonaut.{DecodeJson, EncodeJson}
 import example.http.Encoders._
 import example.model.Model
 import example.service.airphrame.service.ModelService
+import org.http4s.HttpService
 import org.http4s.dsl._
-import org.http4s.server.HttpService
 
 object ModelResource {
   def apply[T <: Model]()(implicit

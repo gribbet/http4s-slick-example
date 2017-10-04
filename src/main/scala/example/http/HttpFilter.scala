@@ -1,5 +1,5 @@
 package example.http
 
-import org.http4s.server._
+import org.http4s.HttpService
 
-abstract class HttpFilter extends (HttpService => HttpService)
+trait HttpFilter extends (HttpService => HttpService)

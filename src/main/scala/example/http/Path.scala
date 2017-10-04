@@ -1,6 +1,6 @@
 package example.http
 
-import org.http4s.server._
+import org.http4s.HttpService
 
 object Path {
   def apply(prefix: String, service: HttpService) = {
@@ -10,6 +10,7 @@ object Path {
         service(request.copy(uri =
           request.uri.copy(path =
             request.uri.path.replaceFirst(path, ""))))
+          .map(_.orNotFound)
     }
   }
 }
