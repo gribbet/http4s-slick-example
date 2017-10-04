@@ -1,6 +1,5 @@
 import sbt.Keys._
 import sbt._
-import spray.revolver.RevolverPlugin.Revolver
 
 object Build extends sbt.Build {
   val http4sVersion = "0.10.1"
@@ -18,6 +17,4 @@ object Build extends sbt.Build {
         "org.http4s" %% "http4s-argonaut" % http4sVersion,
         "org.slf4j" % "slf4j-simple" % "1.7.12",
         "com.h2database" % "h2" % "1.4.190"))
-    .settings(Revolver.settings: _*)
-    .settings(Revolver.reForkOptions := Revolver.reForkOptions.value.copy(connectInput = true))
 }
