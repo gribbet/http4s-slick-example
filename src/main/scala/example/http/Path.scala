@@ -7,7 +7,7 @@ object Path {
     val path = s"/$prefix"
     HttpService {
       case request if request.uri.path startsWith path =>
-        service(request.copy(uri =
+        service(request.withUri(
           request.uri.copy(path =
             request.uri.path.replaceFirst(path, ""))))
           .map(_.orNotFound)

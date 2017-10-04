@@ -1,5 +1,5 @@
 package example.database
 
-import slick.driver.H2Driver
+import slick.jdbc.H2Profile
 
-object Driver extends H2Driver
+object Driver extends H2Profile
