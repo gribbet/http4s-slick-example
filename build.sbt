@@ -8,6 +8,7 @@ lazy val project = Project(
   .settings(
     version := "1.0.0",
     scalaVersion := "2.12.3",
+    scalacOptions := Seq("-unchecked", "-deprecation"),
     libraryDependencies ++= Seq(
       "com.typesafe.slick" %% "slick" % "3.2.1",
       "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2",
