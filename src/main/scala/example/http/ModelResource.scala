@@ -1,17 +1,17 @@
 package example.http
 
-import argonaut.{DecodeJson, EncodeJson}
 import example.http.Encoders._
 import example.model.Model
 import example.service.airphrame.service.ModelService
+import io.circe._
 import org.http4s.HttpService
 import org.http4s.dsl._
 
 object ModelResource {
   def apply[T <: Model]()(implicit
     modelService: ModelService[T, _],
-    encodeJson: EncodeJson[T],
-    decodeJson: DecodeJson[T]) = HttpService {
+    encodeJson: Encoder[T],
+    decodeJson: Decoder[T]) = HttpService {
 
     case request@GET -> Root =>
       modelService.list

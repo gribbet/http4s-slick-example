@@ -1,19 +1,19 @@
 package example.http
 
-import argonaut.{DecodeJson, EncodeJson, PrettyParams}
 import example.model.Model
-import org.http4s.argonaut.ArgonautInstances
+import io.circe._
+import org.http4s.circe._
 
 object Encoders {
   private val argonautInstances =
-    ArgonautInstances.withPrettyParams(PrettyParams.spaces4)
+    CirceInstances.withPrinter(Printer.spaces4)
 
-  implicit def modelEncoder[T <: Model](implicit encodeJson: EncodeJson[T]) =
+  implicit def modelEncoder[T <: Model](implicit encoder: Encoder[T]) =
     argonautInstances.jsonEncoderOf[T]
 
-  implicit def modelListEncoder[T <: Model](implicit encodeJson: EncodeJson[T]) =
+  implicit def modelListEncoder[T <: Model](implicit encoder: Encoder[T]) =
     argonautInstances.jsonEncoderOf[List[T]]
 
-  implicit def modelDecoder[T <: Model](implicit decodeJson: DecodeJson[T]) =
+  implicit def modelDecoder[T <: Model](implicit decoder: Decoder[T]) =
     argonautInstances.jsonOf[T]
 }
